@@ -5,8 +5,11 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dt';
@@ -17,30 +20,34 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  getAll() {
-    return this.userService.getAll();
+  async getAll(
+    @Query('page', ParseIntPipe) page?: number,
+    @Query('per_page', ParseIntPipe) per_page?: number,
+    @Query('user_id') user_id?: string,
+  ) {
+    return await this.userService.getAll(page, per_page, user_id);
   }
 
   @Get(':id')
-  get(@Param('id', ParseIntPipe) userId: number) {
+  get(@Param('id', ParseUUIDPipe) userId: string) {
     return this.userService.get(userId);
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return { createUserDto };
+  create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) userId: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Param('id', ParseUUIDPipe) userId: string,
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
   ) {
-    return { id: userId, ...updateUserDto };
+    return this.userService.update(userId, updateUserDto);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) userId: number) {
-    return { id: userId };
+  delete(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.userService.delete(userId);
   }
 }

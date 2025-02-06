@@ -15,9 +15,5 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  tax_number: string;
-
-  @IsString()
-  @IsNotEmpty()
-  phone_number: string;
+  birth_date: string;
 }
