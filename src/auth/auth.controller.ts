@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -14,9 +14,10 @@ export class AuthController {
   }
 
   @Post('register')
-  @ApiResponse({
-    status: 201,
+  @ApiOkResponse({
+    type: RegisterDto,
     description: 'The record has been successfully created.',
+    isArray: false,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiBody({
