@@ -11,6 +11,7 @@ async function main() {
       last_name: 'R',
       email: 'daniel@example.com',
       birth_date: new Date().toLocaleDateString(),
+      password: 'senha',
     },
   });
 
@@ -22,6 +23,7 @@ async function main() {
       last_name: 'R2',
       email: 'daniel2@example.com',
       birth_date: new Date().toLocaleDateString(),
+      password: 'senha',
     },
   });
 
@@ -33,6 +35,7 @@ async function main() {
       last_name: 'R3',
       email: 'daniel3@example.com',
       birth_date: new Date().toLocaleDateString(),
+      password: 'senha',
     },
   });
 
@@ -44,6 +47,7 @@ async function main() {
       last_name: 'R4',
       email: 'daniel4@example.com',
       birth_date: new Date().toLocaleDateString(),
+      password: 'senha',
     },
   });
 
@@ -55,6 +59,7 @@ async function main() {
       last_name: 'R5',
       email: 'daniel5@example.com',
       birth_date: new Date().toLocaleDateString(),
+      password: 'senha',
     },
   });
 
