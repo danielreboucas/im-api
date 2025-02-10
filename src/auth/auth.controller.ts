@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
+import { Public } from 'utils/decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -8,11 +9,13 @@ import { RegisterDto } from './dto/register.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @Post('login')
   login(@Body() req: LoginDto) {
     return this.authService.login(req);
   }
 
+  @Public()
   @Post('register')
   @ApiOkResponse({
     type: RegisterDto,
