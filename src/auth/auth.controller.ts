@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -13,6 +14,15 @@ export class AuthController {
   }
 
   @Post('register')
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiBody({
+    type: RegisterDto,
+    description: 'Json structure for user object',
+  })
   async register(@Body() req: RegisterDto) {
     return this.authService.register(req);
   }
