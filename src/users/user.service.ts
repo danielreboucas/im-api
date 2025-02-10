@@ -12,13 +12,11 @@ export class UserService {
   async getAll(
     page: number = 1,
     per_page: number = 10,
-    user_id?: string,
   ): Promise<{ data: User[]; total: number }> {
     const offset = (page - 1) * per_page;
     const users = await this.prisma.user.findMany({
       skip: offset,
       take: per_page,
-      where: user_id ? { id: user_id } : {},
     });
 
     return {
@@ -31,9 +29,11 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { id: user_id },
     });
+
     if (!user) {
-      throw new NotFoundException('User not found 2');
+      throw new NotFoundException('Usuário não encontrado');
     }
+
     return user;
   }
 

@@ -22,9 +22,8 @@ export class UserController {
   async getAll(
     @Query('page', ParseIntPipe) page?: number,
     @Query('per_page', ParseIntPipe) per_page?: number,
-    @Query('user_id') user_id?: string,
   ) {
-    return await this.userService.getAll(page, per_page, user_id);
+    return await this.userService.getAll(page, per_page);
   }
 
   @Get(':id')
