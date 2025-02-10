@@ -12,8 +12,6 @@ export class CatchEverythingFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: HttpException, host: ArgumentsHost): void {
-    // In certain situations `httpAdapter` might not be available in the
-    // constructor method, thus we should resolve it here.
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
@@ -25,7 +23,7 @@ export class CatchEverythingFilter implements ExceptionFilter {
     console.log(exception);
 
     const responseBody = {
-      statusCode: httpStatus,
+      status: httpStatus,
       timestamp: new Date().toISOString(),
       message: exception.message,
       path: httpAdapter.getRequestUrl(ctx.getRequest()),

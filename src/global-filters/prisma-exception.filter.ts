@@ -13,25 +13,25 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    let statusCode = HttpStatus.BAD_REQUEST;
+    let status = HttpStatus.BAD_REQUEST;
     let message = 'Database error';
 
     switch (exception.code) {
       case 'P2002':
-        statusCode = HttpStatus.CONFLICT;
+        status = HttpStatus.CONFLICT;
         message = `Duplicate entry: ${exception?.meta?.target}`;
         break;
       case 'P2025':
-        statusCode = HttpStatus.NOT_FOUND;
+        status = HttpStatus.NOT_FOUND;
         message = 'Record not found';
         break;
       default:
-        statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
         message = 'An unexpected database error occurred';
     }
 
-    response.status(statusCode).json({
-      statusCode,
+    response.status(status).json({
+      status,
       message,
     });
   }
