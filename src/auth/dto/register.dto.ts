@@ -1,12 +1,6 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  IsStrongPassword,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
-export class CreateUserDto {
+export class RegisterDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -23,8 +17,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   birth_date: string;
 
-  @IsStrongPassword()
+  @IsString()
+  @MinLength(6, { message: 'A senha deve ter 6 ou mais caracteres' })
   @IsNotEmpty()
-  @MinLength(6)
   password: string;
 }

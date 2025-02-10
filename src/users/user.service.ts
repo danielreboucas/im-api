@@ -1,9 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { format } from 'date-fns';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { isValidDate } from 'utils/validations/validateDate';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dt';
 
 @Injectable()
@@ -37,17 +35,17 @@ export class UserService {
     return user;
   }
 
-  async create(createUserDto: CreateUserDto) {
-    const user = await this.prisma.user.create({
-      data: {
-        name: createUserDto.name,
-        last_name: createUserDto.last_name,
-        email: createUserDto.email,
-        birth_date: format(new Date(createUserDto.birth_date), 'dd-MM-yyyy'),
-      },
-    });
-    return user;
-  }
+  // async create(createUserDto: CreateUserDto) {
+  //   const user = await this.prisma.user.create({
+  //     data: {
+  //       name: createUserDto.name,
+  //       last_name: createUserDto.last_name,
+  //       email: createUserDto.email,
+  //       birth_date: format(new Date(createUserDto.birth_date), 'dd-MM-yyyy'),
+  //     },
+  //   });
+  //   return user;
+  // }
 
   update(userId: string, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({

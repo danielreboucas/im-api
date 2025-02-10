@@ -20,12 +20,11 @@ export class CatchEverythingFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    console.log(exception);
 
+    const response = exception.getResponse() as object;
     const responseBody = {
-      status: httpStatus,
+      ...response,
       timestamp: new Date().toISOString(),
-      message: exception.message,
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
 

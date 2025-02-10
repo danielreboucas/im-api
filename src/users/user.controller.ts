@@ -7,10 +7,8 @@ import {
   ParseIntPipe,
   ParseUUIDPipe,
   Patch,
-  Post,
   Query,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dt';
 import { UserService } from './user.service';
 
@@ -31,10 +29,10 @@ export class UserController {
     return this.userService.get(userId);
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.userService.create(createUserDto);
+  // }
 
   @Patch(':id')
   update(
