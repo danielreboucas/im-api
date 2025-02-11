@@ -19,15 +19,16 @@ model User {
   last_name  String
   email      String @unique
   birth_date String
+  password   String
 
   roles String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password String
-
   products Product[]
+  orders   Order[]
+  sales    Sale[]
 }
 
 model Product {
@@ -38,4 +39,64 @@ model Product {
 
   userId String
   User   User   @relation(fields: [userId], references: [id])
+
+  orders OrderItem[]
+  sales  SaleItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id     String      @id @default(uuid())
+  items  OrderItem[]
+  status OrderStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model OrderItem {
+  id       String @id @default(uuid())
+  quantity Int
+  price    Float
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Sale {
+  id         String     @id @default(uuid())
+  totalPrice Float
+  items      SaleItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model SaleItem {
+  id       String @id @default(uuid())
+  quantity Int
+  price    Float
+
+  saleId String
+  sale   Sale   @relation(fields: [saleId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
 }
