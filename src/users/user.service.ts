@@ -10,15 +10,15 @@ export class UserService {
   async getAll(
     page: number = 1,
     per_page: number = 10,
-  ): Promise<{ data: User[]; total: number }> {
+  ): Promise<{ data: Partial<User>[]; total: number }> {
     const offset = (page - 1) * per_page;
     const users = await this.prisma.user.findMany({
       skip: offset,
       take: per_page,
     });
-
+    const result = users.map(({ password, ...result }) => result);
     return {
-      data: users,
+      data: result,
       total: users.length,
     };
   }
@@ -31,8 +31,8 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }
-
-    return user;
+    const { password, ...result } = user;
+    return result;
   }
 
   // async create(createUserDto: CreateUserDto) {
