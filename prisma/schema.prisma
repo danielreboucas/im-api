@@ -20,6 +20,8 @@ model User {
   email      String @unique
   birth_date String
 
+  roles String[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
