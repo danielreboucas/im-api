@@ -32,6 +32,8 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      id: user.id,
+      access_level: user.roles,
     };
   }
 
@@ -49,7 +51,6 @@ export class AuthService {
       },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = user;
 
     return result;

@@ -17,7 +17,6 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  // @Roles(Role.ADMIN)
   async getAll(
     @Query('page', ParseIntPipe) page?: number,
     @Query('per_page', ParseIntPipe) per_page?: number,
