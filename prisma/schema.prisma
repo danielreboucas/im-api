@@ -26,4 +26,16 @@ model User {
   updatedAt DateTime @updatedAt
 
   password String
+
+  products Product[]
+}
+
+model Product {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  quantity    Int
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
 }
