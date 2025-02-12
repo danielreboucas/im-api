@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Sale } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
@@ -60,6 +64,10 @@ export class SaleService {
       where: { id: id },
     });
 
+    if (!sale) {
+      throw new NotFoundException('Venda não encontrada');
+    }
+
     let totalPrice: number = sale?.totalPrice ? sale?.totalPrice : 0;
     if (updateSaleDto.items && Array.isArray(updateSaleDto.items)) {
       totalPrice += updateSaleDto.items.reduce(
@@ -75,8 +83,34 @@ export class SaleService {
       const productIds = updateSaleDto.items.map((item) => item.productId);
       const products = await this.prisma.product.findMany({
         where: { id: { in: productIds } },
-        select: { id: true, name: true },
+        select: { id: true, name: true, quantity: true },
       });
+
+      const insufficientStock = updateSaleDto.items.find(
+        (item) =>
+          (products.find((p) => p.id === item.productId)?.quantity ?? 0) <
+          item.quantity,
+      );
+
+      if (insufficientStock) {
+        throw new BadRequestException(
+          'O produto não possui estoque suficiente',
+        );
+      }
+
+      await this.prisma.$transaction(
+        updateSaleDto.items.map((item) =>
+          this.prisma.product.updateMany({
+            where: {
+              id: item.productId,
+              quantity: { gte: item.quantity },
+            },
+            data: {
+              quantity: { decrement: item.quantity },
+            },
+          }),
+        ),
+      );
 
       saleItems = updateSaleDto.items.map((item) => {
         const product = products.find((p) => p.id === item.productId);
