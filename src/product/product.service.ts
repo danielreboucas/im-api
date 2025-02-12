@@ -45,7 +45,7 @@ export class ProductService {
     });
 
     if (!product) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException('Produto não encontrado');
     }
 
     return product;
