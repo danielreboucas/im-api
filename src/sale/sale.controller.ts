@@ -29,7 +29,7 @@ export class SaleController {
     @Query('page', ParseIntPipe) page?: number,
     @Query('per_page', ParseIntPipe) per_page?: number,
   ) {
-    return await this.saleService.findAll();
+    return await this.saleService.findAll(page, per_page);
   }
 
   @Get(':id')
