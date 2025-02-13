@@ -100,7 +100,7 @@ export class SaleService {
 
       await this.prisma.$transaction(
         updateSaleDto.items.map((item) =>
-          this.prisma.product.updateMany({
+          this.prisma.product.update({
             where: {
               id: item.productId,
               quantity: { gte: item.quantity },
