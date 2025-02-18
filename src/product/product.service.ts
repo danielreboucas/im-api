@@ -27,14 +27,17 @@ export class ProductService {
   async findAll(
     page: number = 1,
     per_page: number = 10,
-  ): Promise<{ data: Product[]; total: number }> {
+  ): Promise<{ data: Partial<Product>[]; total: number }> {
     const offset = (page - 1) * per_page;
     const products = await this.prisma.product.findMany({
       skip: offset,
       take: per_page,
     });
+    const result = products.map(
+      ({ userId, createdAt, updatedAt, ...result }) => result,
+    );
     return {
-      data: products,
+      data: result,
       total: products.length,
     };
   }
