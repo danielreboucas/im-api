@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
 import { Public } from 'src/decorators/public.decorator';
 import { AuthService } from './auth.service';
@@ -11,6 +11,11 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @HttpCode(200)
+  @ApiOkResponse({
+    type: LoginDto,
+    description: 'Logged in successfully.',
+  })
   login(@Body() req: LoginDto) {
     return this.authService.login(req);
   }

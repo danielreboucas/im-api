@@ -6,7 +6,7 @@ import { HttpExceptionFilter } from './global-filters/http-exception.filter';
 import { PrismaExceptionFilter } from './global-filters/prisma-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
