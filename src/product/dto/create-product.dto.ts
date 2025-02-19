@@ -4,7 +4,7 @@ import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class CreateProductDto {
   @ApiProperty({ required: true, example: 'Pencil' })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Nome não deve ser vazio' })
   name: string;
 
   @ApiProperty({ required: false, example: 10 })
