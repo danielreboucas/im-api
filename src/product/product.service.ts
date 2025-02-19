@@ -57,8 +57,8 @@ export class ProductService {
   async update(
     id: string,
     updateProductDto: UpdateProductDto,
-  ): Promise<Product> {
-    return await this.prisma.product.update({
+  ): Promise<Partial<Product>> {
+    const product = await this.prisma.product.update({
       where: { id: id },
       data: {
         ...(updateProductDto.name ? { name: updateProductDto.name } : {}),
@@ -70,9 +70,16 @@ export class ProductService {
           : {}),
       },
     });
+
+    const { createdAt, updatedAt, userId, ...result } = product;
+
+    return result;
   }
 
-  async remove(id: string) {
-    return await this.prisma.product.delete({ where: { id: id } });
+  async remove(id: string): Promise<Partial<Product>> {
+    const product = await this.prisma.product.delete({ where: { id: id } });
+    const { createdAt, updatedAt, userId, ...result } = product;
+
+    return result;
   }
 }
