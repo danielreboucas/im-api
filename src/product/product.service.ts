@@ -29,16 +29,19 @@ export class ProductService {
     per_page: number = 10,
   ): Promise<{ data: Partial<Product>[]; total: number }> {
     const offset = (page - 1) * per_page;
-    const products = await this.prisma.product.findMany({
-      skip: offset,
-      take: per_page,
-    });
+    const [products, count] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        skip: offset,
+        take: per_page,
+      }),
+      this.prisma.product.count(),
+    ]);
     const result = products.map(
       ({ userId, createdAt, updatedAt, ...result }) => result,
     );
     return {
       data: result,
-      total: products.length,
+      total: count,
     };
   }
 
