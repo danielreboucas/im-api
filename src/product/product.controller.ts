@@ -28,8 +28,9 @@ export class ProductController {
   async findAll(
     @Query('page', ParseIntPipe) page?: number,
     @Query('per_page', ParseIntPipe) per_page?: number,
+    @Query('product_name') product_name?: string,
   ) {
-    return await this.productService.findAll(page, per_page);
+    return await this.productService.findAll(page, per_page, product_name);
   }
 
   @Get(':id')

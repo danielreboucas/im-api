@@ -27,12 +27,14 @@ export class ProductService {
   async findAll(
     page: number = 1,
     per_page: number = 10,
+    product_name: string = '',
   ): Promise<{ data: Partial<Product>[]; total: number }> {
     const offset = (page - 1) * per_page;
     const [products, count] = await this.prisma.$transaction([
       this.prisma.product.findMany({
         skip: offset,
         take: per_page,
+        where: { name: { contains: product_name, mode: 'insensitive' } },
       }),
       this.prisma.product.count(),
     ]);
