@@ -29,8 +29,14 @@ export class ProductController {
     @Query('page', ParseIntPipe) page?: number,
     @Query('per_page', ParseIntPipe) per_page?: number,
     @Query('product_name') product_name?: string,
+    @Query('sort') sort?: 'asc' | 'desc',
   ) {
-    return await this.productService.findAll(page, per_page, product_name);
+    return await this.productService.findAll(
+      page,
+      per_page,
+      product_name,
+      sort,
+    );
   }
 
   @Get(':id')

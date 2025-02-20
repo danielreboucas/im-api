@@ -28,6 +28,7 @@ export class ProductService {
     page: number = 1,
     per_page: number = 10,
     product_name: string = '',
+    sort_by?: 'asc' | 'desc',
   ): Promise<{ data: Partial<Product>[]; total: number }> {
     const offset = (page - 1) * per_page;
     const [products, count] = await this.prisma.$transaction([
@@ -35,6 +36,7 @@ export class ProductService {
         skip: offset,
         take: per_page,
         where: { name: { contains: product_name, mode: 'insensitive' } },
+        orderBy: { quantity: sort_by },
       }),
       this.prisma.product.count(),
     ]);
