@@ -28,8 +28,10 @@ export class SaleController {
   async findAll(
     @Query('page', ParseIntPipe) page?: number,
     @Query('per_page', ParseIntPipe) per_page?: number,
+    @Query('sale_name') sale_name?: string,
+    @Query('sort') sort?: 'asc' | 'desc',
   ) {
-    return await this.saleService.findAll(page, per_page);
+    return await this.saleService.findAll(page, per_page, sale_name, sort);
   }
 
   @Get(':id')

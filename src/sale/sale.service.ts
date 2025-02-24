@@ -29,22 +29,35 @@ export class SaleService {
   async findAll(
     page: number = 1,
     per_page: number = 10,
-  ): Promise<{ data: Sale[]; total: number }> {
+    sale_name: string = '',
+    sort_by?: 'asc' | 'desc',
+  ): Promise<{ data: Partial<Sale>[]; total: number }> {
     const offset = (page - 1) * per_page;
-    const sales = await this.prisma.sale.findMany({
-      skip: offset,
-      take: per_page,
-      include: {
-        items: true,
-      },
-    });
+    const [sales, count] = await this.prisma.$transaction([
+      this.prisma.sale.findMany({
+        skip: offset,
+        take: per_page,
+        where: { name: { contains: sale_name, mode: 'insensitive' } },
+        orderBy: { totalPrice: sort_by },
+        include: {
+          items: true,
+          _count: true,
+        },
+      }),
+      this.prisma.sale.count(),
+    ]);
+
+    const result = sales.map(
+      ({ userId, createdAt, updatedAt, ...result }) => result,
+    );
+
     return {
-      data: sales,
-      total: sales.length,
+      data: result,
+      total: count,
     };
   }
 
-  async findOne(id: string): Promise<Sale> {
+  async findOne(id: string): Promise<Partial<Sale>> {
     const sale = await this.prisma.sale.findUnique({
       where: { id: id },
       include: {
@@ -56,7 +69,8 @@ export class SaleService {
       throw new NotFoundException('Venda não encontrada');
     }
 
-    return sale;
+    const { userId, createdAt, updatedAt, ...result } = sale;
+    return result;
   }
 
   async update(id: string, updateSaleDto: UpdateSaleDto): Promise<Sale> {
