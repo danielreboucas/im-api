@@ -49,7 +49,7 @@ export class ProductService {
     };
   }
 
-  async findOne(id: string): Promise<Product> {
+  async findOne(id: string): Promise<Partial<Product>> {
     const product = await this.prisma.product.findUnique({
       where: { id: id },
     });
@@ -58,7 +58,8 @@ export class ProductService {
       throw new NotFoundException('Produto não encontrado');
     }
 
-    return product;
+    const { userId, createdAt, updatedAt, ...result } = product;
+    return result;
   }
 
   async update(
