@@ -13,11 +13,66 @@ export class SaleService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createSaleDto: CreateSaleDto, user): Promise<Partial<Sale>> {
+    let totalPrice: number = 0;
+    if (createSaleDto.items && Array.isArray(createSaleDto.items)) {
+      totalPrice += createSaleDto.items.reduce(
+        (sum, product) => sum + product.quantity * product.price,
+        0,
+      );
+    }
+
+    let saleItems: { quantity: number; price: number; productId: string }[] =
+      [];
+
+    if (createSaleDto.items) {
+      const productIds = createSaleDto.items.map((item) => item.productId);
+      const products = await this.prisma.product.findMany({
+        where: { id: { in: productIds } },
+        select: { id: true, name: true, quantity: true },
+      });
+
+      const insufficientStock = createSaleDto.items.find(
+        (item) =>
+          (products.find((p) => p.id === item.productId)?.quantity ?? 0) <
+          item.quantity,
+      );
+
+      if (insufficientStock) {
+        throw new BadRequestException(
+          'O produto não possui estoque suficiente',
+        );
+      }
+
+      await this.prisma.$transaction(
+        createSaleDto.items.map((item) =>
+          this.prisma.product.update({
+            where: {
+              id: item.productId,
+              quantity: { gte: item.quantity },
+            },
+            data: {
+              quantity: { decrement: item.quantity },
+            },
+          }),
+        ),
+      );
+
+      saleItems = createSaleDto.items.map((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        return {
+          quantity: item.quantity,
+          price: item.price,
+          productId: item.productId,
+          productName: product?.name,
+        };
+      });
+    }
+
     const sale = await this.prisma.sale.create({
       data: {
         name: createSaleDto.name,
         description: createSaleDto.description,
-        items: {},
+        items: { create: saleItems },
         userId: user.sub,
       },
     });
